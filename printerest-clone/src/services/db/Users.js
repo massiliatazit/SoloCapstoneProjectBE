@@ -27,7 +27,7 @@ const UserSchema = new Schema({
   ,
   facebookId: 
    {type: String},
-    profileType: { default: "Personal", enum: ["Personal", "Business"], type: String },
+    profileType: { default: "personal", enum: ["personal", "business"], type: String },
    
     followers: [{ type: Schema.Types.ObjectId, ref: "Users", required: true }],
     following: [{ type: Schema.Types.ObjectId, ref: "Users", required: true }],

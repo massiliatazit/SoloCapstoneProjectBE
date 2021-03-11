@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const User = require("../db/Users");
-const joi = require('@hapi/joi')
+const Joi = require('@hapi/joi')
 
 const authenticate = async (user) => {
   try {
@@ -73,9 +73,8 @@ const refreshToken = async (oldRefreshToken) => {
 
   return { token: newAccessToken, refreshToken: newRefreshToken };
 };
-const schemavalidation ={
-
-    name: joi.string().min(6).required(),
-    email:joi.string().min(6).required()
-}
-module.exports = { authenticate, verifyJWT, refreshToken };
+const schemavalidation = Joi.object({ username: Joi.string() .min(6) .required(),
+    email: Joi.string() .min(6) .required() .email(),
+    password: Joi.string() .min(6) .required() });
+    
+module.exports = { authenticate, verifyJWT, refreshToken, schemavalidation};
