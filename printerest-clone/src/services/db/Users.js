@@ -30,13 +30,14 @@ const UserSchema = new Schema({
       sparse: true,
       unique: true
     },
-    saved: [{ type: Schema.Types.ObjectId, ref: "SavedPins", required: true }],
+    pins: [{ type: Schema.Types.ObjectId, ref: "Pin", required: true }],
     id: {
       type: String,
       sparse: true,
       unique: true
     }
   },
+  pinned: [{ type: Schema.Types.ObjectId, ref: "Pin" }],
   likes: {
     type: [Schema.Types.ObjectId],
     default: []
@@ -52,6 +53,32 @@ UserSchema.methods.toJSON = function () {
   delete userObject.__v;
   return userObject;
 };
+UserSchema.statics.authenticate = function (username, password, callback) {
+
+  User.findOne({ "local.username": username })
+    .exec((error, user) => {
+      if (error) {
+        return callback(error);
+      }
+      if (!user) {
+        let error = new Error("User not found");
+        error.status = 401;
+        return callback(error);
+      }
+ 
+      bcrypt.compare(password, user.local.password, function (error, match) {
+        if (match) {
+          return callback(null, user);
+        } else if (error) {
+          return next(error);
+        } else {
+          let error = new Error("Credentials don't match");
+          error.status = 401;
+          return callback(error);
+        }
+      });
+    });
+ };
 
 UserSchema.pre("validate", async function (next) {
     const user = this;

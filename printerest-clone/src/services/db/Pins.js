@@ -15,13 +15,15 @@ const PinSchema = new Schema({
         type: Number,
         default: 0
       },
+      owner: { type: Schema.Types.ObjectId, required: true, ref: "User" },
       category: {
         name: String},
       likes: {
         type: Number,
         default: 0
       },
-      saved: [{ type: Schema.Types.ObjectId, ref: "SavedPins", required: true }],
+      pinnedBy: [{ type: Schema.Types.ObjectId, ref: "User" }]
+      
 
 
 

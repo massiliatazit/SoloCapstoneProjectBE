@@ -1,5 +1,6 @@
 const express = require('express')
 const mongoose = require('mongoose')
+const cors = require('cors')
 const {join} = require('path')
 const server = express()
 // const http = require('http')
@@ -8,7 +9,7 @@ const serviceRouters = require('./services')
 const passport = require("passport");
 const { notFoundHandler, forbiddenHandler, badRequestHandler, genericErrorHandler } = require("./errorHandlers");
 const port = process.env.PORT ||7000 
-const staticFolderPath = join(_dirname, '../public')
+const staticFolderPath = join(__dirname, '../public')
 
 server.use(express.static(staticFolderPath))
 server.use(express.json())
