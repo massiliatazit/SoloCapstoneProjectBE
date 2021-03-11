@@ -130,4 +130,30 @@ userRoute.post("/login", async (req, res, next) => {
       next(error);
     }
   });
+  userRoute.post("/logOut", authorize, async (req, res, next) => {
+    try {
+      if (req.token) {
+        req.user.refreshTokens = req.user.refreshTokens.filter((t) => t.token !== req.token);
+        await req.user.save();
+        
+        res.status(201).redirect(`${process.env.FE_URL}/logIn`);
+      } else {
+        const err = new Error("Token not provided");
+        err.status = 401;
+        next(err);
+      }
+    } catch (error) {
+      next(error);
+    }
+  });
+  
+  userRoute.post("/logOutAll", authorize, async (req, res, next) => {
+    try {
+      req.user.refreshTokens = [];
+      await req.user.save();
+      res.status(201).redirect(`${process.env.FE_URL}/logIn`);
+    } catch (error) {
+      next(error);
+    }
+  });
 module.exports = userRoute;
