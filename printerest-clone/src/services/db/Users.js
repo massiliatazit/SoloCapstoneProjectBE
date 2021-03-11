@@ -32,7 +32,7 @@ const UserSchema = new Schema({
     followers: [{ type: Schema.Types.ObjectId, ref: "Users", required: true }],
     following: [{ type: Schema.Types.ObjectId, ref: "Users", required: true }],
     
-  pins: [{ type: Schema.Types.ObjectId, ref: "Pin" }],
+  saved: [{ type: Schema.Types.ObjectId, ref: "Pin" }],
   likes: {
     type: [Schema.Types.ObjectId],
     default: []

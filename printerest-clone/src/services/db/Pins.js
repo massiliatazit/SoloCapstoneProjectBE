@@ -32,5 +32,5 @@ const PinSchema = new Schema({
 },
 { timestamps: true }
 ) ;
-const Pin = model('Pin',PinSchema)
-module.exports = Pin
+const PinModel = model('Pin',PinSchema)
+module.exports = PinModel
