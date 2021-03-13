@@ -1,11 +1,11 @@
 const express = require("express");
-const UserSchema = require("../db/Users");
+const UserSchema = require("../db/UsersSchema");
 const {authorize} = require("../midllewares")
-const PinModel = require("../db/Pins")
+const PinModel = require("../db/PinsSchema")
 
 const {
   authenticate,
-  verifyJWT,
+ 
   refreshToken,
   schemavalidation,
   schemaLoginvalidation
@@ -75,7 +75,7 @@ userRoute.post("/login", async (req, res, next) => {
       }
     }
   });
-  userRoute.get("/", async (req, res, next) => {
+  userRoute.get("/", authorize,async (req, res, next) => {
     try {
       const query = querytomongo(req.query);// convert the url query to mongoose property
       const total = await UserSchema.countDocuments(req.query.search && { $text: { $search: req.query.search } });// count number f documents in that collection
@@ -90,11 +90,15 @@ userRoute.post("/login", async (req, res, next) => {
       next(error);
     }
   });
+ 
 
   userRoute.get("/:username/saved", authorize, async (req, res, next) => {
     try {
       if (req.user) {
-        req.user;
+        const user = await UserSchema.findOne({ username: req.params.username });
+        if (user && req.user.username !== user.username){
+       
+  
         const userObject = req.user.toObject();
         const querySaved = req.user.saved.map((_id) => {
             return { _id };
@@ -105,8 +109,8 @@ userRoute.post("/login", async (req, res, next) => {
         
        
         const saved = await PinModel.find({ $or: [...querySaved, { _id: null }] }).populate(
-          "users",
-          "-password -refreshTokens -email -followers -following -saved -puts "
+          "Pin",
+          "saved"
         );
        
         const pins = await PinModel.find({ owner: req.user._id }).populate(
@@ -126,6 +130,12 @@ userRoute.post("/login", async (req, res, next) => {
         error.httpStatusCode = 404;
         next(error);
       }
+    }else{
+      const error = new Error();
+        error.httpStatusCode = 401;
+        next(error);
+
+    }
     } catch (error) {
       next(error);
     }

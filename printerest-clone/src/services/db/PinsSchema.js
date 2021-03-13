@@ -16,6 +16,7 @@ const PinSchema = new Schema({
         default: 0
       },
       owner: { type: Schema.Types.ObjectId, required: true, ref: "User" },
+      saved:{type: Schema.Types.ObjectId, required: true, ref: "Pin"},
       category: {
         name: String},
       likes: {
@@ -23,12 +24,7 @@ const PinSchema = new Schema({
         default: 0
       },
       pinnedBy: [{ type: Schema.Types.ObjectId, ref: "User" }]
-      
-
-
-
-
-
+    
 },
 { timestamps: true }
 ) ;

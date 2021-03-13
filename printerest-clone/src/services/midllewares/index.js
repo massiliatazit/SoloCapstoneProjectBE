@@ -1,4 +1,4 @@
-const UserSchema = require("../db/Users");
+const UserSchema = require("../db/UsersSchema");
 const { verifyJWT } = require("./tools");
 
 const authorize = async (req, res, next) => {
@@ -18,7 +18,7 @@ const authorize = async (req, res, next) => {
     req.user = user;
     next();
   } catch (e) {
-    const err = new Error("Please authenticate");
+    const err = new Error("Not authorized");
     err.httpStatusCode = 401;
     next(err);
   }

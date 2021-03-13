@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const User = require("../db/Users");
+const User = require("../db/UsersSchema");
 const Joi = require('@hapi/joi')
 
 const authenticate = async (user) => {
