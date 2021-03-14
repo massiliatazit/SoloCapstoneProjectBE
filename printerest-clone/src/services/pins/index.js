@@ -20,7 +20,7 @@ pinRoute.post("/", authorize, async (req, res, next) => {
         useFindAndModify: false,
       });
     }
-    res.status(201).send({ post: savedPost.populate("user"), ok: true });
+    res.status(201).send({ pin: savedPin.populate("user"), ok: true });
   } catch (error) {}
 });
 module.exports = pinRoute;

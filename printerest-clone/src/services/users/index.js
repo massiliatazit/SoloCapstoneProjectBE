@@ -70,6 +70,8 @@ userRoute.post("/login", async (req, res, next) => {
           err.httpStatusCode = 403;
           next(err);
         }
+
+        
       } catch (error) {
         next(error);
       }
@@ -85,7 +87,11 @@ userRoute.post("/login", async (req, res, next) => {
         .limit(query.options.limit)
         .select("-password -refreshTokens -email -followers -following -saved");
       const links = query.links("/users", total);
-      res.send({ users, links, total });
+      const userObject = req.user.toObject();
+      delete userObject.password;
+      delete userObject.refreshTokens;
+      delete userObject.__v;
+      res.send(userObject);
     } catch (error) {
       next(error);
     }
@@ -96,7 +102,7 @@ userRoute.post("/login", async (req, res, next) => {
     try {
       if (req.user) {
         const user = await UserSchema.findOne({ username: req.params.username });
-        if (user && req.user.username !== user.username){
+        if (user && req.user.username === user.username){
        
   
         const userObject = req.user.toObject();
@@ -119,8 +125,7 @@ userRoute.post("/login", async (req, res, next) => {
         );
         const numPins = pins.length;
         delete userObject.refreshTokens;
-        delete userObject.followers;
-        delete userObject.following;
+      
         delete userObject.password;
         delete userObject.__v;
   

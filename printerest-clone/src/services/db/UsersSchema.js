@@ -2,44 +2,46 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const bcrypt = require("bcrypt");
 
-const UserSchema = new Schema({
-  
+const UserSchema = new Schema(
+  {
     email: {
       type: String,
-      unique: true,
+      // unique: true,
       trim: true,
-      max:255,
-      min:6
+      max: 255,
+      min: 6,
     },
     username: {
       type: String,
-      unique: true,
+      // unique: true,
       sparse: true,
       trim: true,
-      min:3
+      min: 3,
     },
     password: {
       type: String,
-      required: true, 
-      max:1024,
-      min:4
-    }
-  ,
-  facebookId: 
-   {type: String},
-    profileType: { default: "personal", enum: ["personal", "business"], type: String },
-   
+      required: true,
+      max: 1024,
+      min: 4,
+    },
+    facebookId: { type: String },
+    profileType: {
+      default: "personal",
+      enum: ["personal", "business"],
+      type: String,
+    },
+
     followers: [{ type: Schema.Types.ObjectId, ref: "Users", required: true }],
     following: [{ type: Schema.Types.ObjectId, ref: "Users", required: true }],
-    
-  saved: [{ type: Schema.Types.ObjectId, ref: "Pin" }],
-  likes: {
-    type: [Schema.Types.ObjectId],
-    default: []
+
+    saved: [{ type: Schema.Types.ObjectId, ref: "Pin" }],
+    likes: {
+      type: [Schema.Types.ObjectId],
+      default: [],
+    },
+    refreshTokens: [{ token: { type: String, required: true } }],
   },
-  refreshTokens: [{ token: { type: String, required: true } }],
-},
-{ timestamps: true }
+  { timestamps: true }
 );
 
 UserSchema.methods.toJSON = function () {
@@ -50,7 +52,11 @@ UserSchema.methods.toJSON = function () {
   return userObject;
 };
 
-UserSchema.statics.findByCredentials = async function (email, password, username) {
+UserSchema.statics.findByCredentials = async function (
+  email,
+  password,
+  username
+) {
   const user = await this.findOne({ $or: [{ email }, { username }] });
   if (user) {
     const isMatch = await bcrypt.compare(password, user.password);
@@ -73,7 +79,7 @@ UserSchema.statics.findByUserName = async function (username) {
     delete userObject.refreshTokens;
     delete userObject.followers;
     delete userObject.following;
-    
+
     const data = { ...userObject, followers, numpins, following };
     return data;
   } else {
@@ -82,32 +88,36 @@ UserSchema.statics.findByUserName = async function (username) {
 };
 
 UserSchema.pre("validate", async function (next) {
-    const user = this;
-    const plainPW = user.password;
-    const facebook = user.facebookId;
-    facebook || plainPW ? next() : next(new Error("No password provided"));
-  });
-  
-  UserSchema.pre("save", async function (next) {
-    const user = this;
-    const plainPW = user.password;
-  
-    if (user.isModified("password")) {
-      user.password = await bcrypt.hash(plainPW, 10);
-    }
-    next();
-  });
-  UserSchema.statics.changePassword = async function (userId, oldPassword, newPassword) {
-    const user = await this.findById(userId);
-    if (user) {
-      const isMatch = await bcrypt.compare(oldPassword, user.password);
-      if (isMatch) {
-        user.password = newPassword;
-        user.save();
-        return true;
-      } else return false;
-    } else {
-      return false;
-    }
-  };
-  module.exports = mongoose.model("Users", UserSchema);
+  const user = this;
+  const plainPW = user.password;
+  const facebook = user.facebookId;
+  facebook || plainPW ? next() : next(new Error("No password provided"));
+});
+
+UserSchema.pre("save", async function (next) {
+  const user = this;
+  const plainPW = user.password;
+
+  if (user.isModified("password")) {
+    user.password = await bcrypt.hash(plainPW, 10);
+  }
+  next();
+});
+UserSchema.statics.changePassword = async function (
+  userId,
+  oldPassword,
+  newPassword
+) {
+  const user = await this.findById(userId);
+  if (user) {
+    const isMatch = await bcrypt.compare(oldPassword, user.password);
+    if (isMatch) {
+      user.password = newPassword;
+      user.save();
+      return true;
+    } else return false;
+  } else {
+    return false;
+  }
+};
+module.exports = mongoose.model("Users", UserSchema);

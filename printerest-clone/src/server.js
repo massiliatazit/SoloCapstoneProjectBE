@@ -24,7 +24,7 @@ server.use(genericErrorHandler);
 mongoose.connect(process.env.MONGO_CONNECTION,{
     useNewUrlParser: true,
     useUnifiedTopology:true,
-    useCreateIndex:true,
+  
 }).then(server.listen(port,()=>{
     console.log("Running on port", port,)
 })).catch(err=>console.log(err))
