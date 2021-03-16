@@ -34,7 +34,7 @@ const verifyJWT = (token) =>
 
 const generateRefreshJWT = (payload) =>
   new Promise((res, rej) =>
-    jwt.sign(payload, process.env.REFRESH_JWT_SECRET, { expiresIn: "1 week" }, (err, token) => {
+    jwt.sign(payload, process.env.REFRESH_JWT_SECRET, { expiresIn: "5 week" }, (err, token) => {
       if (err) rej(err);
       res(token);
     })
