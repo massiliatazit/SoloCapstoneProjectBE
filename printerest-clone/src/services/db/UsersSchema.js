@@ -34,11 +34,12 @@ const UserSchema = new Schema(
     followers: [{ type: Schema.Types.ObjectId, ref: "Users", required: true }],
     following: [{ type: Schema.Types.ObjectId, ref: "Users", required: true }],
 
-    saved: [{ type: Schema.Types.ObjectId, ref: "Pin" }],
+    saved: [{ type: Schema.Types.ObjectId, ref: "Pins" }],
     likes: {
       type: [Schema.Types.ObjectId],
       default: [],
     },
+   
     refreshTokens: [{ token: { type: String, required: true } }],
   },
   { timestamps: true }

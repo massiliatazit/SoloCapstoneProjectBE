@@ -119,9 +119,9 @@ userRoute.post("/login", async (req, res, next) => {
           "saved"
         );
        
-        const pins = await PinModel.find({ owner: req.user._id }).populate(
+        const pins = await PinModel.find({ pinnedBy: req.user._id }).populate(
           "users",
-          "-password -refreshTokens -email -followers -following -saved -puts "
+          "-password -refreshTokens -email -followers -following -saved ,-username  "
         );
         const numPins = pins.length;
         delete userObject.refreshTokens;

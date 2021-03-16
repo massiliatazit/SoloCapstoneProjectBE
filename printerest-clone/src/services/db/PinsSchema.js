@@ -1,14 +1,11 @@
 const { Schema, model } = require("mongoose");
 const PinSchema = new Schema(
   {
-    username: { type: String, required: true },
     title: {
       type: String,
       required: true,
     },
-    address: {
-      type: String,
-    },
+   
     link: {
       type: String,
       download:String,
@@ -29,8 +26,9 @@ const PinSchema = new Schema(
       },
     ],
     likes: {
-      type: Number,
-      default: 0,
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
     liked_by_user:{type:Boolean, default:false},
     height:{type: Number,default:6000},
