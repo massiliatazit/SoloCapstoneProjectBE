@@ -81,4 +81,4 @@ const schemavalidation = Joi.object({ username: Joi.string() .min(6) .required()
         password: Joi.string() .min(6) .required() });
         
 
-module.exports = { authenticate, verifyJWT, refreshToken, schemavalidation,schemaLoginvalidation};
+module.exports = { authenticate, generateJWT,generateRefreshJWT, verifyJWT, refreshToken, schemavalidation,schemaLoginvalidation};

@@ -8,9 +8,12 @@ const {
  
   refreshToken,
   schemavalidation,
-  schemaLoginvalidation
+  schemaLoginvalidation,
+  generateJWT,generateRefreshJWT
 } = require("../midllewares/tools");
 const querytomongo = require("query-to-mongo")
+
+ 
 const userRoute = express.Router();
 //FACEBOOK LOG IN
 userRoute.get("/facebookLogin", passport.authenticate("facebook", { scope: ["public_profile", "email"] }));
@@ -36,7 +39,9 @@ userRoute.post("/register", async (req, res) => {
         ...req.body,
       });
       const savedUser= await user.save();
-      res.status(201).send(savedUser)
+      const refreshToken =  await generateRefreshJWT({_id:savedUser._id})
+      const accessToken =  await generateJWT({_id:savedUser._id})
+      res.status(201).send({tokens:{accessToken,refreshToken}})
  } catch (error) {
      res.status(400).send(error)
      
