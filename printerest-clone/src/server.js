@@ -7,6 +7,7 @@ const server = express()
 // const httpServer = http.createServer(server)
 const serviceRouters = require('./services')
 const passport = require("passport");
+const oauth = require("./services/midllewares/oauth");
 const { notFoundHandler, forbiddenHandler, badRequestHandler, genericErrorHandler } = require("./errorHandlers");
 const port = process.env.PORT ||7000 
 const staticFolderPath = join(__dirname, '../public')

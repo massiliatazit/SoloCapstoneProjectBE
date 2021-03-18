@@ -2,7 +2,7 @@ const express = require("express");
 const UserSchema = require("../db/UsersSchema");
 const {authorize} = require("../midllewares")
 const PinModel = require("../db/PinsSchema")
-
+const passport = require("passport");
 const {
   authenticate,
  
@@ -12,6 +12,17 @@ const {
 } = require("../midllewares/tools");
 const querytomongo = require("query-to-mongo")
 const userRoute = express.Router();
+//FACEBOOK LOG IN
+userRoute.get("/facebookLogin", passport.authenticate("facebook", { scope: ["public_profile", "email"] }));
+
+userRoute.get("/facebookRedirect", passport.authenticate("facebook"), async (req, res, next) => {
+  try {
+    
+    res.status(200).redirect(`${process.env.FE_URL}/profile?token=${req.user.tokens.token}&refreshToken=${req.user.tokens.refreshToken}`);
+  } catch (error) {
+    next(error);
+  }
+});
 
 
 userRoute.post("/register", async (req, res) => {
