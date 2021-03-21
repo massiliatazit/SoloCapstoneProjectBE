@@ -161,6 +161,37 @@ userRoute.post("/login", async (req, res, next) => {
       next(error);
     }
   });
+  userRoute.post("/saved/:id", authorize, async (req, res, next) => {
+    try {
+      const post = await UserSchema.findOne({ _id: req.user._id, saved: req.params.id });
+  
+      const modifiedUser = post
+        ? await UserSchema.findByIdAndUpdate(
+            req.user.id,
+            {
+              $pull: { saved: req.params.id },
+            },
+            {
+              new: true,
+              useFindAndModify: false,
+            }
+          )
+        : await UserSchema.findByIdAndUpdate(
+            req.user.id,
+            {
+              $push: { saved: req.params.id },
+            },
+            {
+              new: true,
+              useFindAndModify: false,
+            }
+          );
+  
+      res.status(201).send(modifiedUser);
+    } catch (error) {
+      next(error);
+    }
+  });
   userRoute.post("/logOut", authorize, async (req, res, next) => {
     try {
       if (req.token) {
