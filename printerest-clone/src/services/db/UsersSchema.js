@@ -11,6 +11,7 @@ const UserSchema = new Schema(
       max: 255,
       min: 6,
     },
+    img:{},
     username: {
       type: String,
       // unique: true,
@@ -26,7 +27,7 @@ const UserSchema = new Schema(
     },
     facebookId: { type: String },
     profileType: {
-      default: "personal",
+      default: "business",
       enum: ["personal", "business"],
       type: String,
     },
@@ -38,6 +39,10 @@ const UserSchema = new Schema(
     likes: {
       type: [Schema.Types.ObjectId],
       default: [],
+    },
+    img: {
+      type: String,
+     
     },
    
     refreshTokens: [{ token: { type: String, required: true } }],

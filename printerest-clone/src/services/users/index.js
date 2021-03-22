@@ -2,6 +2,23 @@ const express = require("express");
 const UserSchema = require("../db/UsersSchema");
 const {authorize} = require("../midllewares")
 const PinModel = require("../db/PinsSchema")
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const cloudinary = require("../../cloudinary")
+
+const multer = require("multer");
+
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: "pins",
+    format: async (req, file) => "png" || "jpg",
+    public_id: (req, file) => req.user.username + "_profile",
+    transformation: [{ width: 400, height: 400, gravity: "face", crop: "fill" }],
+  },
+});
+
+const parser = multer({ storage: storage });
+
 const passport = require("passport");
 const {
   authenticate,
