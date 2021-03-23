@@ -17,7 +17,7 @@ const PinSchema = new Schema(
     },
     color:{type:String},
     description: {type: String},
-    imgURL: [{ type: String }],
+    images: [{ type: String }],
     owner: [{ type: Schema.Types.ObjectId, required: true, ref: "User" }],
 
     categories: [

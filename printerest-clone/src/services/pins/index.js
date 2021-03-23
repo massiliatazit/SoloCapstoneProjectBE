@@ -2,7 +2,22 @@ const express = require("express");
 const PinModel = require("../db/PinsSchema");
 const { authorize } = require("../midllewares");
 const UserSchema = require("../db/UsersSchema");
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const cloudinary = require("../../cloudinary")
 
+const multer = require("multer");
+
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: "pins",
+    format: async (req, file) => "png" || "jpg",
+    public_id: (req, file) => req.user.username + "_profile",
+    transformation: [{ width: 400, height: 400, gravity: "face", crop: "fill" }],
+  },
+});
+
+const parser = multer({ storage: storage });
 const pinRoute = express.Router();
 
 //create saved pins
@@ -52,43 +67,18 @@ pinRoute.get("/:username",authorize,async (req, res, next)=>{
   }
 })
 
-// postRouter.put("/:id", authorize, async function (req, res, next) {
-//   try {
-//     const updatedPin= await PinModel.findOneAndUpdate({ _id: req.params.id, user: req.user }, req.body);
 
-//     if (updatedPin) {
-//       req.body.tags.forEach(async (userID) => {
-//         const user = await UserSchema.findOne({ _id: userID, tagged: req.params.id });
-//         user
-//           ? await UserSchema.findByIdAndUpdate(
-//               userID,
-//               {
-//                 $pull: { tagged: sevedPost._id },
-//               },
-//               {
-//                 new: true,
-//                 useFindAndModify: false,
-//               }
-//             )
-//           : await UserSchema.findByIdAndUpdate(
-//               userID,
-//               {
-//                 $push: { tagged: sevedPost._id },
-//               },
-//               {
-//                 new: true,
-//                 useFindAndModify: false,
-//               }
-//             );
-//         if (!user) {
-//           notification = new Notification({ from: req.user._id, to: userID, post: updated._id, action: "tagged you" });
-//           await notification.save();
-//         }
-//       });
-//     }
-//     res.send(updated);
-//   } catch (error) {
-//     next(error);
-//   }
-// });
+pinRoute.put("/:id/picture", authorize, cloudinaryMulter.single("image"), async (req, res, next) => {
+  try {
+    const updatedPin = await PinModel.findOneAndUpdate({ _id: req.params.id, user: req.user._id }, { images: req.file.path }, { runValidators: true, new: true })
+      // .populate("comments.user", "-password -refreshTokens -email -followers -following -saved -puts -tagged -posts")
+      
+      .populate("user", "-password -refreshTokens -email -followers -following -saved ");
+
+    res.send(updatedPin);
+  } catch (error) {
+    next(error);
+  }
+});
+
 module.exports = pinRoute;
