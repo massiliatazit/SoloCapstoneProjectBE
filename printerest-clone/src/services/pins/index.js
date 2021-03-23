@@ -17,7 +17,7 @@ const storage = new CloudinaryStorage({
   },
 });
 
-const parser = multer({ storage: storage });
+const cloudinaryMulter = multer({ storage: storage });
 const pinRoute = express.Router();
 
 //create saved pins
