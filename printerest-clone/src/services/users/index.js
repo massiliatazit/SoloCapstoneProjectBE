@@ -180,9 +180,9 @@ userRoute.post("/login", async (req, res, next) => {
   });
   userRoute.post("/saved/:id", authorize, async (req, res, next) => {
     try {
-      const post = await UserSchema.findOne({ _id: req.user._id, saved: req.params.id });
+      const pin = await UserSchema.findOne({ _id: req.user._id, saved: req.params.id });
   
-      const modifiedUser = post
+      const modifiedUser = pin
         ? await UserSchema.findByIdAndUpdate(
             req.user.id,
             {

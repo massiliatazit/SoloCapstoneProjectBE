@@ -25,6 +25,7 @@ const UserSchema = new Schema(
       max: 1024,
       min: 4,
     },
+    views:{type: String},
     facebookId: { type: String },
     profileType: {
       default: "business",
