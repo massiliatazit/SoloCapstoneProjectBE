@@ -15,6 +15,7 @@ const PinSchema = new Schema(
       type: Number,
       default: 0,
     },
+    comments: [{ type: Schema.Types.ObjectId, ref: "Comment", required: true }],
     color:{type:String},
     description: {type: String},
     images: [{ type: String }],
