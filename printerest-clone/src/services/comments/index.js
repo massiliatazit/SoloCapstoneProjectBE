@@ -1,6 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const { authorize } = require("../auth/middleware");
+const { authorize } = require("../midllewares");
 const CommentSchema = require("./schema");
 const route = express.Router();
 const PinModel = require ("../db/PinsSchema")
