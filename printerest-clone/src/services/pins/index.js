@@ -50,14 +50,14 @@ pinRoute.get("/:username",authorize,async (req, res, next)=>{
     if (req.user.username === req.params.username){
       const UserPins = await PinModel.find({owner:req.user._id} )
       if(UserPins){
-        res.send(200).send(UserPins)
+        res.status(200).send(UserPins)
 
       }else{
-        res.send(404).send("no pins for this user yet")
+        res.status(404).send("no pins for this user yet")
       }
     }else{
 
-      res.send(404).send("this user doesn't exist")
+      res.status(404).send("this user doesn't exist")
     }
  
   } catch (error) {
@@ -70,11 +70,12 @@ pinRoute.get("/:username",authorize,async (req, res, next)=>{
 
 pinRoute.put("/:id/picture", authorize, cloudinaryMulter.single("image"), async (req, res, next) => {
   try {
-    const updatedPin = await PinModel.findOneAndUpdate({ _id: req.params.id, user: req.user._id }, { images: req.file.path }, { runValidators: true, new: true })
-      // .populate("comments.user", "-password -refreshTokens -email -followers -following -saved -puts -tagged -posts")
+  
+    const updatedPin = await PinModel.findOneAndUpdate({ _id: req.params.id, owner: req.user._id }, { images: req.file.path }, { runValidators: true, new: true })
       
-      .populate("user", "-password -refreshTokens -email -followers -following -saved ");
-
+      
+        .populate("user", "-password -refreshTokens -email -followers -following -saved -username ");
+     console.log(updatedPin)
     res.send(updatedPin);
   } catch (error) {
     next(error);

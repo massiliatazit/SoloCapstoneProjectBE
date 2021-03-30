@@ -11,7 +11,7 @@ const UserSchema = new Schema(
       max: 255,
       min: 6,
     },
-    img:{},
+ 
     username: {
       type: String,
       // unique: true,
@@ -19,6 +19,7 @@ const UserSchema = new Schema(
       trim: true,
       min: 3,
     },
+    description: {type: String},
     password: {
       type: String,
       required: true,
@@ -43,8 +44,10 @@ const UserSchema = new Schema(
     },
     img: {
       type: String,
+      required: true 
      
     },
+    
    
     refreshTokens: [{ token: { type: String, required: true } }],
   },

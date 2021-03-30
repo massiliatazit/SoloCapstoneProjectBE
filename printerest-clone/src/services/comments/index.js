@@ -7,11 +7,11 @@ const PinModel = require ("../db/PinsSchema")
 route.post("/:pin", authorize, async (req, res, next) => {
     try {
       //when pining a comment get the pin and add notification to the pin owner
-      const newComment = new Comment({ ...req.body, pin: req.params.pin, user: req.user._id });
+      const newComment = new CommentSchema({ ...req.body, pin: req.params.pin, user: req.user._id });
       const { _id } = await newComment.save();
       const pin = await PinModel.findByIdAndUpdate(req.params.pin, { $push: { comments: _id } }, { runValidators: true, new: true }).populate(
         "user",
-        "-password -refreshTokens -email -followers -following -saved -puts -tagged -pins"
+        "-password -refreshTokens -email -followers -following -saved -pins"
       );
   
     //   const notification = new Notification({ from: req.user._id, to: pin.user._id, pin: req.params.pin, action: "left a comment" });
