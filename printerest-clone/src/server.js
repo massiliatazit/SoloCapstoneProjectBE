@@ -3,8 +3,10 @@ const mongoose = require('mongoose')
 const cors = require('cors')
 const {join} = require('path')
 const server = express()
-// const http = require('http')
-// const httpServer = http.createServer(server)
+const socketio = require('socket.io')
+ const http = require('http')
+const httpServer = http.createServer(server)
+createSocketServer(httpServer)
 const serviceRouters = require('./services')
 const passport = require("passport");
 const oauth = require("./services/midllewares/oauth");
@@ -14,8 +16,19 @@ const staticFolderPath = join(__dirname, '../public')
 
 server.use(express.static(staticFolderPath))
 server.use(express.json())
-server.use(cors());
 
+const whitelist = [process.env.FE_URL];
+const corsOptions = {
+    origin: (origin, callback) => {
+      if (whitelist.indexOf(origin) !== -1 || !origin) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  };
+  server.use(cors(corsOptions));
 server.use(passport.initialize());
 server.use("/", serviceRouters);
 server.use(badRequestHandler);
@@ -26,6 +39,6 @@ mongoose.connect(process.env.MONGO_CONNECTION,{
     useNewUrlParser: true,
     useUnifiedTopology:true,
   
-}).then(server.listen(port,()=>{
+}).then(httpServer.listen(port,()=>{
     console.log("Running on port", port,)
 })).catch(err=>console.log(err))
