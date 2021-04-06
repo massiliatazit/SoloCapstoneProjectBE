@@ -5,7 +5,7 @@ const CommentSchema = new Schema(
   {
     user: {
       type: Schema.Types.ObjectId,
-      ref: "Users",
+      ref: "User",
       required: true,
     },
     text: {
@@ -20,7 +20,7 @@ const CommentSchema = new Schema(
     likes: [
       {
         type: Schema.Types.ObjectId,
-        ref: "Users",
+        ref: "User",
         required: true,
       },
     ],

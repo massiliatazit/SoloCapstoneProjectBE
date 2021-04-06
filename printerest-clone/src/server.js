@@ -29,7 +29,7 @@ const corsOptions = {
     },
     credentials: true,
   };
-  server.use(cors(corsOptions));
+  server.use(cors());
 server.use(passport.initialize());
 server.use("/", serviceRouters);
 server.use(badRequestHandler);

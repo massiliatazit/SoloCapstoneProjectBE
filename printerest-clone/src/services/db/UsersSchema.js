@@ -34,8 +34,8 @@ const UserSchema = new Schema(
       type: String,
     },
 
-    followers: [{ type: Schema.Types.ObjectId, ref: "Users", required: true }],
-    following: [{ type: Schema.Types.ObjectId, ref: "Users", required: true }],
+    followers: [{ type: Schema.Types.ObjectId, ref: "User", required: true }],
+    following: [{ type: Schema.Types.ObjectId, ref: "User", required: true }],
 
     saved: [{ type: Schema.Types.ObjectId, ref: "Pins" }],
     likes: {
