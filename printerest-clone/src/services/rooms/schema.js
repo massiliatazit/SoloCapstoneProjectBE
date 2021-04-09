@@ -1,4 +1,4 @@
-const { Schema, model } = require("mongoose");
+const { Schema, model, Model } = require("mongoose");
 
 
 const RoomSchema = new Schema({
@@ -24,3 +24,4 @@ const RoomSchema = new Schema({
     type: String,
   },
 });
+module.exports = model("Room",RoomSchema)
