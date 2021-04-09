@@ -8,6 +8,7 @@ const MessageSchema = new Schema(
     },
     sender: { type: Schema.Types.ObjectId, ref: "Users" },
     room: { type: Schema.Types.ObjectId, ref: "Rooms" },
+    
   },
   { timestamps: true }
 );

@@ -4,14 +4,10 @@ const { Schema, model, Model } = require("mongoose");
 const RoomSchema = new Schema({
   name: {
     type: String,
-    required: true,
+    
   },
-  participants: [
-    {
-      user: { type: Schema.Types.ObjectId, ref: "Users" },
-      socketId: { type: String },
-    },
-  ],
+  participants:{  type: [Schema.Types.ObjectId], ref: "Users" },
+
   chatHistory: [
     {
       sender: { type: String },

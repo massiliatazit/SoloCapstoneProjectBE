@@ -47,7 +47,7 @@ const UserSchema = new Schema(
       required: true 
      
     },
-    
+    socketId:String,
    
     refreshTokens: [{ token: { type: String, required: true } }],
   },
