@@ -4,10 +4,13 @@ const RoomModel = require("../services/rooms/schema");
 const addUserSocketToRoom = async (data, socket,io) => {
   try {
     /** in data you either have roomId or participants */
-    const {roomId,participants,userId} = data;
-
+    
+   
     let room ;
-    if(roomId){
+    
+    const {participants,userId} = data;
+    if(data.roomId){
+      const {roomId} = data
       console.log("joining to room")
 
       /** if there is roomId it means we have room created before
@@ -18,10 +21,12 @@ const addUserSocketToRoom = async (data, socket,io) => {
     }
     else{
       console.log("creating room")
+      console.log(participants)
       /**  if there is no roomId create one with given participants add yourself to room
        * 
         */
       room = await new RoomModel({participants:[...participants,userId]}).save()
+      
     }
 
     // join to the room
@@ -45,6 +50,7 @@ const addUserSocketToRoom = async (data, socket,io) => {
       }
     })
     console.log("everyone is joined to room ", room._id)
+    io.to(room._id).emit("roomId",room._id)
   } catch (error) {
     console.log(error);
   }

@@ -54,7 +54,7 @@ userRoute.post("/register", async (req, res) => {
  try {
     const user = new UserSchema({
         ...req.body,
-        img:"https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_1280.png"
+        img:"https://i.pinimg.com/280x280_RS/13/0c/44/130c448b429c9a75d93b1666d7d230c9.jpg"
       });
       const savedUser= await user.save();
       const refreshToken =  await generateRefreshJWT({_id:savedUser._id})
@@ -111,16 +111,13 @@ userRoute.post("/login", async (req, res, next) => {
       }
     }
   });
-  userRoute.get("/", authorize,async (req, res, next) => {
+  userRoute.get("/me", authorize,async (req, res, next) => {
     try {
-      const query = querytomongo(req.query);// convert the url query to mongoose property
-      const total = await UserSchema.countDocuments(req.query.search && { $text: { $search: req.query.search } });// count number f documents in that collection
-      const users = await UserSchema.find(req.query.search && { $text: { $search: req.query.search } })
-        .sort({ createdAt: -1 })
-        .skip(query.options.skip)
-        .limit(query.options.limit)
-        .select("-password -refreshTokens -email -followers -following -saved,-img");
-      const links = query.links("/users", total);
+     
+      
+   
+      
+
       const userObject = req.user.toObject();
       delete userObject.password;
       delete userObject.refreshTokens;
@@ -128,6 +125,22 @@ userRoute.post("/login", async (req, res, next) => {
       res.send(userObject);
     } catch (error) {
       next(error);
+      console.log(error)
+    }
+  });
+  userRoute.get("/", authorize,async (req, res, next) => {
+    try {
+      // const query = querytomongo(req.query);// convert the url query to mongoose property
+      // const total = await UserSchema.countDocuments(req.query.search && { $text: { $search: req.query.search } });// count number f documents in that collection
+      // const users = await UserSchema.find(req.query.search &&  { username:{ $text: { $search: req.query.search }} })
+      const users = await UserSchema.find()
+      
+    
+     
+      res.send(users);
+    } catch (error) {
+      next(error);
+      console.log(error)
     }
   });
  

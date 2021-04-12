@@ -6,7 +6,7 @@ const RoomSchema = new Schema({
     type: String,
     
   },
-  participants:{  type: [Schema.Types.ObjectId], ref: "Users" },
+  participants:[{  type: Schema.Types.ObjectId, ref: "Users" }],
 
   chatHistory: [
     {
