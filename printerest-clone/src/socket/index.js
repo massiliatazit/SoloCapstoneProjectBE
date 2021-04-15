@@ -9,17 +9,10 @@ const addUserSocketToRoom = async (data, socket,io) => {
     let room ;
     
     const {participants,userId} = data;
-    if(data.roomId){
-      const {roomId} = data
-      console.log("joining to room")
+    room = await RoomModel.findOne({participants:{$all:[participants[0],userId]}})
+    console.log("try to find room",room)
+    if(room===null){
 
-      /** if there is roomId it means we have room created before
-       * 
-       *  find room 
-        */
-      room =  await RoomModel.findById(roomId);
-    }
-    else{
       console.log("creating room")
       console.log(participants)
       /**  if there is no roomId create one with given participants add yourself to room
@@ -28,6 +21,7 @@ const addUserSocketToRoom = async (data, socket,io) => {
       room = await new RoomModel({participants:[...participants,userId]}).save()
       
     }
+  
 
     // join to the room
     socket.join(room._id)
@@ -50,7 +44,7 @@ const addUserSocketToRoom = async (data, socket,io) => {
       }
     })
     console.log("everyone is joined to room ", room._id)
-    io.to(room._id).emit("roomId",room._id)
+    io.to(room._id).emit("roomId",{roomId:room._id,chatHistory:room.chatHistory})
   } catch (error) {
     console.log(error);
   }
@@ -81,13 +75,15 @@ const getUsersInRoom = async (roomId) => {
 
 const addMessageToRoom = async (data) => {
   try {
+    console.log("adding")
+    console.log(data)
     await RoomModel.findByIdAndUpdate(data.roomId, {
       $push: {
         chatHistory: {
           sender: data.sender,
           text: data.text,
           createdAt: new Date(),
-          attachment: data.attachment,
+          
         },
       },
     });

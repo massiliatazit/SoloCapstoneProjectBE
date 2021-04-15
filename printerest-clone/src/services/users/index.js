@@ -54,7 +54,8 @@ userRoute.post("/register", async (req, res) => {
  try {
     const user = new UserSchema({
         ...req.body,
-        img:"https://i.pinimg.com/280x280_RS/13/0c/44/130c448b429c9a75d93b1666d7d230c9.jpg"
+        img:"https://icons-for-free.com/iconfiles/png/512/business+costume+male+man+office+user+icon-1320196264882354682.png"
+        // img:"https://i.pinimg.com/280x280_RS/13/0c/44/130c448b429c9a75d93b1666d7d230c9.jpg"
       });
       const savedUser= await user.save();
       const refreshToken =  await generateRefreshJWT({_id:savedUser._id})

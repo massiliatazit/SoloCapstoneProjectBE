@@ -46,9 +46,9 @@ const createSocketServer = (server) => {
       }
     });
     socket.on("CHAT_MESSAGE", async (data) => {
-      io.in(data.roomId).emit("CHAT_MESSAGE", data);
-
       await addMessageToRoom(data);
+      socket.to(data.roomId).emit("CHAT_MESSAGE", data);
+        console.log("message received")
     });
     socket.on("SET_ONLINE", (data) => updateMySocketId(socket, data));
   });
