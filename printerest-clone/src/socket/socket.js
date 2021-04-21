@@ -32,6 +32,7 @@ const createSocketServer = (server) => {
           sender: "Nazz: double nazz",
           text: `${data.username} is now offline`,
           createdAt: new Date(),
+          
         };
 
         socket.to(data.roomId).broadcast.emit("CHAT_MESSAGE", offlineMessage);

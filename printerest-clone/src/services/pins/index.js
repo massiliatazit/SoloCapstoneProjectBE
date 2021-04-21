@@ -83,10 +83,13 @@ pinRoute.put("/:id/picture", authorize, cloudinaryMulter.single("image"), async 
 });
 pinRoute.delete("/:id", authorize, async function (req, res, next) {
   try {
-    await PinModel.findOneAndDelete({ _id: req.params.id, user: req.user._id });
+    const todelete = await PinModel.findOne({ _id: req.params.id, owner: req.user._id })
+    console.log(todelete)
+    await PinModel.findOneAndDelete({ _id: req.params.id, owner: req.user._id });
     res.status(201).send({ ok: true });
   } catch (error) {
     next(error);
+    console.log(error);
   }
 });
 
