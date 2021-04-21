@@ -8,6 +8,15 @@ const cloudinary = require("../../cloudinary")
 const multer = require("multer");
 
 const uniqid = require("uniqid");
+const storage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+      folder: "pins",
+      format: async (req, file) => "png" || "jpg",
+      public_id: (req, file) => req.user.username + "_stories",
+      //transformation: [{ width: 400, height: 400, gravity: "face", crop: "fill" }],
+    },
+  });
   const storageVideo = new CloudinaryStorage({
     cloudinary: cloudinary,
     params: {
@@ -17,7 +26,7 @@ const uniqid = require("uniqid");
     },
   });
   const parserVideo = multer({ storage: storageVideo });
-  
+  const parserImage = multer({ storage: storage });
 route.post("/", authorize, async (req, res, next) => {
     try {
       const newStory = new StoryModel({ ...req.body, user: req.user._id });
@@ -31,7 +40,7 @@ route.post("/", authorize, async (req, res, next) => {
     try {
       const modifiedStory = await StoryModel.findOneAndUpdate(
         { _id: req.params.id, user: req.user._id },
-        {  video: req.file.fieldname === "video" && req.file.path },
+        {  images: req.file.fieldname === "image" && req.file.path, video: req.file.fieldname === "video" && req.file.path },
         {
           runValidators: true,
           new: true,

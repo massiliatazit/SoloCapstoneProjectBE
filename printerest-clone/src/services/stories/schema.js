@@ -10,14 +10,14 @@ const StorySchema = new Schema(
     },
     categories:[{type:String}],
     description:{type:String},
-    text: {
+    title: {
       type: String,
       required: false,
     },
-    image: {
+    images:[ {
       type: String,
       required: false,
-    },
+    }],
     video: {
       type: String,
       required: false,
