@@ -4,7 +4,7 @@ const { authorize } = require("../midllewares");
 const UserSchema = require("../db/UsersSchema");
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const cloudinary = require("../../cloudinary")
-
+const route = express.Router();
 const multer = require("multer");
 
 const uniqid = require("uniqid");
@@ -36,18 +36,22 @@ route.post("/", authorize, async (req, res, next) => {
       next(error);
     }
   });
-  route.put("/:id/media", authorize, parserVideo.single("video"), async (req, res, next) => {
+  route.put("/:id/media", authorize, parserImage.single("image"), async (req, res, next) => {
     try {
       const modifiedStory = await StoryModel.findOneAndUpdate(
         { _id: req.params.id, user: req.user._id },
-        {  images: req.file.fieldname === "image" && req.file.path, video: req.file.fieldname === "video" && req.file.path },
-        {
-          runValidators: true,
-          new: true,
-          useFindAndModify: false,
-        }
+        {$push: {images: req.file.path}}
+        // , video: req.file.fieldname === "video" && req.file.path },
+      
+        // {
+        //   runValidators: true,
+        //   new: true,
+        //   useFindAndModify: false,
+        // }
       );
-      res.status(201).send(modifiedStory.populate("user", "-password -refreshTokens -email -followers -following -saved "));
+      const story = await StoryModel.findOneAndUpdate({ _id: req.params.id,  user: req.user._id},{ $push: {images: req.file.path}}).populate("user", "-password -refreshTokens -email -followers -following -saved ")
+      console.log(story)
+      res.status(201).send(story);
     } catch (error) {
       next(error);
     }
@@ -68,6 +72,22 @@ route.post("/", authorize, async (req, res, next) => {
       next(error);
     }
   });
+  route.get("/:storyId", authorize, async (req, res, next)=>{
+    try { const story = await StoryModel.findById(req.params.storyId).populate("user", "-password -refreshTokens -email -followers -following -saved -puts -tagged -posts");
+    if(story._id){
+      res.status(201).send(story);
+    }else {
+      const error = new Error("Story not found");
+      error.status = 404;
+      next(error);
+    }
+      
+    } catch (error) {
+      next(error);
+      
+    }
+  
+  })
   
   route.get("/:userId", authorize, async (req, res, next) => {
     try {

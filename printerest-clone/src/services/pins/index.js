@@ -68,6 +68,7 @@ pinRoute.get("/:username",authorize,async (req, res, next)=>{
 })
 
 
+
 pinRoute.put("/:id/picture", authorize, cloudinaryMulter.single("image"), async (req, res, next) => {
   try {
   
@@ -75,7 +76,7 @@ pinRoute.put("/:id/picture", authorize, cloudinaryMulter.single("image"), async 
       
       
         .populate("user", "-password -refreshTokens -email -followers -following -saved -username ");
-     console.log(updatedPin)
+     console.log("here media",updatedPin)
     res.send(updatedPin);
   } catch (error) {
     next(error);

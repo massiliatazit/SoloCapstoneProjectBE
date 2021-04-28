@@ -12,7 +12,7 @@ const StorySchema = new Schema(
     description:{type:String},
     title: {
       type: String,
-      required: false,
+      required: true,
     },
     images:[ {
       type: String,
